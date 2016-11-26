@@ -2,6 +2,7 @@ package com.mygdx.game.States;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -19,6 +20,7 @@ public class EndState extends State {
     private Texture title, score, timePlayed, tokens;
     private Texture menuButton, replayButton, bestScoresButton;
     private Sprite buttonToMenu, buttonToReplay, buttonToBestScores;
+    private Texture scoreImage, timeImage, tokensImage;
 
     protected EndState(GameStateManager gsm) {
 
@@ -28,6 +30,10 @@ public class EndState extends State {
         menuButton = new Texture("EndResources/menu.png");
         replayButton = new Texture("EndResources/replay.png");
         bestScoresButton = new Texture("EndResources/bestScores.png");
+
+        scoreImage = new Texture("EndResources/score.png");
+        timeImage = new Texture("EndResources/time.png");
+        tokensImage = new Texture("EndResources/tokens.png");
 
         double widthSpace = 0.15*MyGdxGame.WIDTH;
         float positionButton1 = (float) 0.18* MyGdxGame.HEIGHT;
@@ -84,13 +90,19 @@ public class EndState extends State {
         int widthTitle = (int)(0.85*MyGdxGame.WIDTH);
         int heightTitle = (int)(0.85*title.getHeight());
         int positionTitle = (int)(0.7*MyGdxGame.HEIGHT);
+        BitmapFont font = new BitmapFont();
+        font.setColor(1.0f, 0.0f, 0.0f, 1.0f);
 
         sb.begin();
         sb.draw(background, 0, 0, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
         sb.draw(title, (MyGdxGame.WIDTH / 2) - (widthTitle / 2), positionTitle, widthTitle, heightTitle);
+        sb.draw(scoreImage, (float) ((MyGdxGame.WIDTH / 2) - 0.5*scoreImage.getWidth()), (float) (0.50*MyGdxGame.HEIGHT), (float) (0.5*scoreImage.getWidth()), scoreImage.getHeight());
+        sb.draw(timeImage, (float) ((MyGdxGame.WIDTH / 2) - 0.5*timeImage.getWidth()), (float) (0.42*MyGdxGame.HEIGHT), (float) (0.5*timeImage.getWidth()), timeImage.getHeight());
+        sb.draw(tokensImage, (float) ((MyGdxGame.WIDTH / 2) - 0.5*tokensImage.getWidth()), (float) (0.34*MyGdxGame.HEIGHT), (float) (0.5*tokensImage.getWidth()), tokensImage.getHeight());
         buttonToMenu.draw(sb);
         buttonToBestScores.draw(sb);
         buttonToReplay.draw(sb);
+        font.draw(sb, "Hello World!", 10, 10);
         sb.end();
 
     }

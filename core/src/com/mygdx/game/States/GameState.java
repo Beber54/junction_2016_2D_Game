@@ -293,7 +293,6 @@ public class GameState extends State{
     }
 
     public float updateLife(Type elementTypeCatched, Type currentTypeMode){
-        life = 0;
         int changingLifes = 0;
         switch(currentTypeMode){
             case Fire:

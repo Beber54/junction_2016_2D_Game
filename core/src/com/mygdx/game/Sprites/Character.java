@@ -34,7 +34,7 @@ public class Character {
     public void update(float dt){
         velocity.add(speed, 0, 0);
         velocity.scl(dt);
-        //position.add(this.newPosition.x, 0, 0);
+
         if(this.newPosition.x >= 0 && (this.newPosition.x) <= (MyGdxGame.WIDTH - speed)) {
             this.getPosition().x = this.newPosition.x;
         }else if(this.newPosition.x < 0){
@@ -42,11 +42,9 @@ public class Character {
         }else if((this.newPosition.x + characterSprite.getWidth()) > MyGdxGame.WIDTH){
             this.getPosition().x = MyGdxGame.WIDTH - speed;
         }
+
         velocity.scl(1/dt);
-        //bounds.setLocation(Math.round(position.x), Math.round(position.y));
-        bounds.setPosition(this.position.x, this.characterSprite.getHeight());
-        Gdx.app.log("pos y character",String.valueOf(this.characterSprite.getHeight()));
-        Gdx.app.log("pos x character",String.valueOf(this.position.x));
+        bounds.setPosition(this.position.x, MyGdxGame.HEIGHT - this.characterSprite.getHeight());
     }
 
     public Vector3 getPosition() {

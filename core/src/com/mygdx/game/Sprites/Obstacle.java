@@ -20,8 +20,6 @@ public class Obstacle {
 
     public int speed = -4;
 
-
-
     private Vector2 position;
     private Vector2 velocity;
     private Rectangle bounds;
@@ -42,9 +40,7 @@ public class Obstacle {
         velocity.scl(dt);
         position.add(0, velocity.y);
         velocity.scl(1/dt);
-        bounds.setPosition(this.position.x, this.position.y);
-        Gdx.app.log("pos x block",String.valueOf(this.position.x));
-        Gdx.app.log("pos y block",String.valueOf(this.position.y));
+        bounds.setPosition(this.position.x,MyGdxGame.HEIGHT - this.position.y);
     }
 
     public Vector2 getPosition() {

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.States.GameState;
 import com.mygdx.game.States.GameStateManager;
 import com.mygdx.game.States.MenuState;
 
@@ -22,7 +23,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
-		gsm.push(new MenuState(gsm));
+		//FOR DEBUG
+		gsm.push(new GameState(gsm));
 	}
 
 	@Override

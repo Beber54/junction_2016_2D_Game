@@ -92,6 +92,7 @@ public class EndState extends State {
         int positionTitle = (int)(0.7*MyGdxGame.HEIGHT);
         BitmapFont font = new BitmapFont();
         font.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+        font.getData().setScale(2);
 
         sb.begin();
         sb.draw(background, 0, 0, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
@@ -102,7 +103,9 @@ public class EndState extends State {
         buttonToMenu.draw(sb);
         buttonToBestScores.draw(sb);
         buttonToReplay.draw(sb);
-        font.draw(sb, "Hello World!", 10, 10);
+        font.draw(sb, "11200", (MyGdxGame.WIDTH / 2)+30, (float) (0.50*MyGdxGame.HEIGHT+scoreImage.getHeight()-13));
+        font.draw(sb, "120s", (MyGdxGame.WIDTH / 2)+30, (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13));
+        font.draw(sb, "5898", (MyGdxGame.WIDTH / 2)+30, (float) (0.34*MyGdxGame.HEIGHT+tokensImage.getHeight()-13));
         sb.end();
 
     }

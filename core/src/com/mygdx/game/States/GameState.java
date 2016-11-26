@@ -8,6 +8,9 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.Sprites.Character;
 import com.mygdx.game.Sprites.Obstacle;
+import com.mygdx.game.Sprites.Type;
+
+import java.util.Random;
 
 /**
  * Created by Corentin on 26/11/2016.
@@ -24,7 +27,9 @@ public class GameState extends State{
 
     private int previousPosY = 0;
 
-    private static final int OBSTACLE_COUNT = 25;
+    private static final int OBSTACLE_COUNT = 20;
+
+    public Type currentTypeMode = Type.Fire;
 
 
     private Array<Obstacle> obstacles;
@@ -32,13 +37,13 @@ public class GameState extends State{
     public GameState(GameStateManager gsm) {
         super(gsm);
         character = new Character(MyGdxGame.WIDTH/2,0);
-        block = new Obstacle(0, MyGdxGame.HEIGHT);
+        block = new Obstacle(0, MyGdxGame.HEIGHT, randomType(currentTypeMode));
         background = new Texture("StartStateResources/background.jpg");
 
         obstacles = new Array<Obstacle>();
 
         for(int i= 1; i < OBSTACLE_COUNT; i++ ){
-            obstacles.add(new Obstacle(randomPosX(), randomPosY()));
+            obstacles.add(new Obstacle(randomPosX(), randomPosY(), randomType(currentTypeMode)));
         }
     }
 
@@ -76,19 +81,86 @@ public class GameState extends State{
     public void update(float dt) {
         bundleInput();
         character.update(dt);
-        block.update(dt);
 
-        for(Obstacle obs : obstacles){
-            obs.update(dt);
-            if(obs.getPosition().y < 0){
-                obs = new Obstacle(0,MyGdxGame.HEIGHT);
+        for(int i = 0; i < obstacles.size; i++) {
+
+            obstacles.get(i).update(dt);
+
+            if (obstacles.get(i).getPosition().y < 0) {
+                if(obstacles.size < OBSTACLE_COUNT) {
+                    obstacles.get(i).getPosition().x = randomPosX();
+                    obstacles.get(i).getPosition().y = randomPosY();
+                    //obstacles.set(i, obstacles.get(i));
+                }
             }
 
-            if(obs.collides(character.getBounds())){
-                Gdx.app.log("collides","true");
-            }else{
+            if((obstacles.get(i).getPosition().y < character.characterSprite.getHeight())
+                    && (obstacles.get(i).getPosition().x == character.getPosition().x)) {
+                Gdx.app.log("collides", "true");
             }
         }
+    }
+
+    public Type randomType(Type currentTypeMode){
+        Random rand = new Random();
+        Type finalType = currentTypeMode;
+        int randomTypeNumber = rand.nextInt((3 - 1) + 1) + 1;
+        Gdx.app.log("randomTypeNumber", String.valueOf(randomTypeNumber));
+        switch (currentTypeMode){
+            case Fire:
+                switch(randomTypeNumber){
+                    case 1:
+                        finalType = Type.Air;
+                        break;
+                    case 2:
+                        finalType = Type.Earth;
+                        break;
+                    case 3:
+                        finalType = Type.Water;
+                        break;
+                }
+                break;
+            case Earth:
+                switch(randomTypeNumber){
+                    case 1:
+                        finalType = Type.Air;
+                        break;
+                    case 2:
+                        finalType = Type.Fire;
+                        break;
+                    case 3:
+                        finalType = Type.Water;
+                        break;
+                }
+                break;
+            case Water:
+                switch(randomTypeNumber){
+                    case 1:
+                        finalType = Type.Air;
+                        break;
+                    case 2:
+                        finalType = Type.Fire;
+                        break;
+                    case 3:
+                        finalType = Type.Earth;
+                        break;
+                }
+                break;
+            case Air:
+                switch(randomTypeNumber){
+                    case 1:
+                        finalType = Type.Water;
+                        break;
+                    case 2:
+                        finalType = Type.Fire;
+                        break;
+                    case 3:
+                        finalType = Type.Earth;
+                        break;
+                }
+                break;
+        }
+        return finalType;
     }
 
     @Override

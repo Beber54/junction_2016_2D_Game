@@ -21,6 +21,7 @@ public class EndState extends State {
     private Texture menuButton, replayButton, bestScoresButton;
     private Sprite buttonToMenu, buttonToReplay, buttonToBestScores;
     private Texture scoreImage, timeImage, tokensImage;
+    private Texture hourglass, coin;
 
     protected EndState(GameStateManager gsm) {
 
@@ -34,6 +35,9 @@ public class EndState extends State {
         scoreImage = new Texture("EndResources/score.png");
         timeImage = new Texture("EndResources/time.png");
         tokensImage = new Texture("EndResources/tokens.png");
+
+        hourglass = new Texture("EndResources/hourglass.png");
+        coin = new Texture("EndResources/coin.png");
 
         double widthSpace = 0.15*MyGdxGame.WIDTH;
         float positionButton1 = (float) 0.18* MyGdxGame.HEIGHT;
@@ -95,17 +99,25 @@ public class EndState extends State {
         font.getData().setScale(2);
 
         sb.begin();
+
         sb.draw(background, 0, 0, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
         sb.draw(title, (MyGdxGame.WIDTH / 2) - (widthTitle / 2), positionTitle, widthTitle, heightTitle);
+
         sb.draw(scoreImage, (float) ((MyGdxGame.WIDTH / 2) - 0.5*scoreImage.getWidth()), (float) (0.50*MyGdxGame.HEIGHT), (float) (0.5*scoreImage.getWidth()), scoreImage.getHeight());
         sb.draw(timeImage, (float) ((MyGdxGame.WIDTH / 2) - 0.5*timeImage.getWidth()), (float) (0.42*MyGdxGame.HEIGHT), (float) (0.5*timeImage.getWidth()), timeImage.getHeight());
         sb.draw(tokensImage, (float) ((MyGdxGame.WIDTH / 2) - 0.5*tokensImage.getWidth()), (float) (0.34*MyGdxGame.HEIGHT), (float) (0.5*tokensImage.getWidth()), tokensImage.getHeight());
+
         buttonToMenu.draw(sb);
         buttonToBestScores.draw(sb);
         buttonToReplay.draw(sb);
+
         font.draw(sb, "11200", (MyGdxGame.WIDTH / 2)+30, (float) (0.50*MyGdxGame.HEIGHT+scoreImage.getHeight()-13));
         font.draw(sb, "120s", (MyGdxGame.WIDTH / 2)+30, (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13));
         font.draw(sb, "5898", (MyGdxGame.WIDTH / 2)+30, (float) (0.34*MyGdxGame.HEIGHT+tokensImage.getHeight()-13));
+
+        /*sb.draw(hourglass, (float) ((MyGdxGame.WIDTH / 2)+70), (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13));
+        sb.draw(hourglass, (float) ((MyGdxGame.WIDTH / 2)+70), (float) (0.34*MyGdxGame.HEIGHT+timeImage.getHeight()-13));*/
+
         sb.end();
 
     }

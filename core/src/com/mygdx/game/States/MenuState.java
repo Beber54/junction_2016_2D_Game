@@ -50,7 +50,7 @@ public class MenuState extends State {
     public void bundleInput() {
 
         if(Gdx.input.isKeyPressed(Input.Keys.P)) {
-            gsm.set(new GameState(gsm));
+            gsm.set(new GameState(gsm, "sprite1"));
             dispose();
         }
 
@@ -61,7 +61,7 @@ public class MenuState extends State {
             Rectangle textureBounds2 = new Rectangle(buttonToSelect.getX(),buttonToSelect.getY(),buttonToSelect.getWidth(),buttonToSelect.getHeight());
 
             if(textureBounds1.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
-                gsm.set(new GameState(gsm));
+                gsm.set(new GameState(gsm, "sprite1"));
                 dispose();
             }
 

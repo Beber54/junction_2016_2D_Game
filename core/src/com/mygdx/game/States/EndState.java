@@ -1,9 +1,13 @@
 package com.mygdx.game.States;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.Sprites.CharactersState;
 
 /**
  * Created by bertr on 26/11/2016.
@@ -28,24 +32,44 @@ public class EndState extends State {
         double widthSpace = 0.15*MyGdxGame.WIDTH;
         float positionButton1 = (float) 0.18* MyGdxGame.HEIGHT;
         float positionButton2 = (float) 0.1* MyGdxGame.HEIGHT;
-
         double sumWidthFirstLine = menuButton.getWidth() + widthSpace + replayButton.getWidth();
+
         buttonToMenu = new Sprite(menuButton);
-        buttonToMenu.setPosition((float) ((MyGdxGame.WIDTH / 2) - (sumWidthFirstLine / 2)), positionButton1);
-        //buttonToMenu.setSize(widthButton,heightButton);
-
         buttonToReplay = new Sprite(replayButton);
-        buttonToReplay.setPosition((float)(buttonToMenu.getX() + buttonToMenu.getWidth() + widthSpace), positionButton1-10);
-        // buttonToReplay.setSize(widthButton,heightButton);
-
         buttonToBestScores = new Sprite(bestScoresButton);
+
+        buttonToMenu.setPosition((float) ((MyGdxGame.WIDTH / 2) - (sumWidthFirstLine / 2)), positionButton1);
+        buttonToReplay.setPosition((float)(buttonToMenu.getX() + buttonToMenu.getWidth() + widthSpace), positionButton1-10);
         buttonToBestScores.setPosition((float) (MyGdxGame.WIDTH / 2) - (bestScoresButton.getWidth() / 2), positionButton2);
-      //  buttonToBestScores.setSize(widthButton,heightButton);
 
     }
 
     @Override
     protected void bundleInput() {
+
+        if(Gdx.input.justTouched()) {
+
+            Vector2 m = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+            Rectangle textureBounds1 = new Rectangle(buttonToMenu.getX(),buttonToMenu.getY(),buttonToMenu.getWidth(),buttonToMenu.getHeight());
+            Rectangle textureBounds2 = new Rectangle(buttonToReplay.getX(),buttonToReplay.getY(),buttonToReplay.getWidth(),buttonToReplay.getHeight());
+            Rectangle textureBounds3 = new Rectangle(buttonToBestScores.getX(),buttonToBestScores.getY(),buttonToBestScores.getWidth(),buttonToBestScores.getHeight());
+
+            if(textureBounds1.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                gsm.set(new MenuState(gsm));
+                dispose();
+            }
+
+            if(textureBounds2.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                gsm.set(new GameState(gsm,"sprite1"));
+                dispose();
+            }
+
+            if(textureBounds3.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                gsm.set(new GameState(gsm,"sprite2")); // A CHANGER !!!
+                dispose();
+            }
+
+        }
 
     }
 
@@ -76,6 +100,7 @@ public class EndState extends State {
         background.dispose();
         title.dispose();
         menuButton.dispose();
-
+        replayButton.dispose();
+        bestScoresButton.dispose();
     }
 }

@@ -21,6 +21,8 @@ import java.util.TimerTask;
 
 public class GameState extends State{
 
+    private SpriteBatch currentSB;
+
     private Character character;
     private Obstacle block;
 
@@ -38,7 +40,11 @@ public class GameState extends State{
     public Type currentTypeMode = Type.Fire;
 
     private String scoreDisplay;
-    BitmapFont yourBitmapFontName;
+    BitmapFont scoreFont;
+
+    private float life = 10;
+    BitmapFont lifeFont;
+    private int maxLife;
 
 
     private Array<Obstacle> obstacles;
@@ -59,7 +65,10 @@ public class GameState extends State{
 
         //Init the score
         scoreDisplay = "0";
-        yourBitmapFontName = new BitmapFont();
+        scoreFont = new BitmapFont();
+
+        //Init lifes
+        lifeFont = new BitmapFont();
     }
 
     private int randomPosX(){
@@ -107,10 +116,16 @@ public class GameState extends State{
                     //obstacles.set(i, obstacles.get(i));
                 }
             }
-
+            boolean isInCollision = false;
             if((obstacles.get(i).getPosition().y < character.characterSprite.getHeight())
                     && (obstacles.get(i).getPosition().x == character.getPosition().x)) {
                 Gdx.app.log("collides", "true");
+                isInCollision = true;
+
+                //Update the life of the player
+                do {
+                    updateLife(obstacles.get(i).getElementType(), currentTypeMode);
+                }while(!isInCollision);
             }
         }
     }
@@ -176,14 +191,84 @@ public class GameState extends State{
         return finalType;
     }
 
+    public float updateLife(Type elementTypeCatched, Type currentTypeMode){
+        int changingLifes = 0;
+        switch(currentTypeMode){
+            case Fire:
+                switch(elementTypeCatched){
+                    case Water:
+                        changingLifes = -2;
+                        break;
+                    case Earth:
+                        changingLifes = -1;
+                        break;
+                    case Air:
+                        changingLifes = 1;
+                        break;
+                }
+                break;
+            case Water:
+                switch(elementTypeCatched){
+                    case Fire:
+                        changingLifes = +1;
+                        break;
+                    case Earth:
+                        changingLifes = -2;
+                        break;
+                    case Air:
+                        changingLifes = -1;
+                        break;
+                }
+                break;
+            case Earth:
+                switch(elementTypeCatched){
+                    case Water:
+                        changingLifes = -2;
+                        break;
+                    case Fire:
+                        changingLifes = -1;
+                        break;
+                    case Air:
+                        changingLifes = +1;
+                        break;
+                }
+                break;
+            case Air:
+                switch(elementTypeCatched){
+                    case Water:
+                        changingLifes = -1;
+                        break;
+                    case Earth:
+                        changingLifes = +1;
+                        break;
+                    case Fire:
+                        changingLifes = +1;
+                        break;
+                }
+                break;
+        }
+
+        life = life + changingLifes;
+        currentSB.begin();
+        lifeFont.draw(currentSB, String.valueOf(life), 10, MyGdxGame.HEIGHT - lifeFont.getLineHeight());
+        currentSB.end();
+        return life;
+    }
+
     @Override
     public void render(final SpriteBatch sb) {
+        currentSB = sb;
         sb.begin();
         sb.draw(background, 0,0);
         sb.draw(character.getCharacter(), character.getPosition().x, character.getPosition().y, MyGdxGame.WIDTH/4, character.characterSprite.getHeight());
         sb.draw(block.getTestTexture(), block.getPosition().x, block.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
-        yourBitmapFontName.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        yourBitmapFontName.draw(sb, scoreDisplay, 25, 100);
+
+        scoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        scoreFont.draw(sb, scoreDisplay, MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - scoreFont.getLineHeight());
+
+        lifeFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        lifeFont.draw(sb, String.valueOf(life), 10, MyGdxGame.HEIGHT - lifeFont.getLineHeight());
+
         for(final Obstacle obs: obstacles){
             sb.draw(obs.getTestTexture(), obs.getPosition().x, obs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
         }

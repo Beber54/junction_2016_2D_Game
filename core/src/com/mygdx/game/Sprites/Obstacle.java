@@ -18,7 +18,7 @@ import java.util.Random;
 public class Obstacle {
 
 
-    public int speed = -4;
+    public int speed = -1;
 
     private Vector2 position;
     private Vector2 velocity;
@@ -71,5 +71,9 @@ public class Obstacle {
 
     public boolean collides(Rectangle characterRect){
         return characterRect.overlaps(bounds);
+    }
+
+    public Type getElementType() {
+        return elementType;
     }
 }

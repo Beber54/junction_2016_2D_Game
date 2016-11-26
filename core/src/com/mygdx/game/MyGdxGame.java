@@ -18,7 +18,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
 		//FOR DEBUG

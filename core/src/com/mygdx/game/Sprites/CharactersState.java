@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.States.GameState;
 import com.mygdx.game.States.GameStateManager;
+import com.mygdx.game.States.MenuState;
 import com.mygdx.game.States.State;
 
 /**
@@ -20,65 +21,97 @@ import com.mygdx.game.States.State;
  */
 
 public class CharactersState extends State {
-    private Texture background;
-    private Texture letters;
-    //private Texture c1;
-    private TextureRegion[] regions = new TextureRegion[4];
-    private TextureRegion[] regionsb = new TextureRegion[4];
-    private Texture texture;
-    private Sprite buttonToPlay[]=new Sprite[4];
-    private Sprite buttonToPlay2[]=new Sprite[4];
-    Rectangle textureBounds[]= new Rectangle[4];
 
-    OrthographicCamera cam;
-    Vector3 mouse;
+    private Texture background, title;
+    private Texture sprite1, sprite2, sprite3, sprite4;
+    private Sprite buttonSprite1, buttonSprite2, buttonSprite3, buttonSprite4;
+    private Texture menuButton;
+    private Sprite buttonToMenu;
 
     public CharactersState(GameStateManager gsm) {
 
         super(gsm);
-        texture = new Texture(Gdx.files.internal("Characters/last-guardian-sprites1.png"));
-        background = new Texture(Gdx.files.internal("StartStateResources/background.jpg"));
-        letters = new Texture(Gdx.files.internal("Characters/Select-character.png"));
+        background = new Texture("StartStateResources/background.jpg");
+        title = new Texture("Characters/Select-character.png");
+        sprite1 = new Texture("Characters/sprite1.png");
+        sprite2 = new Texture("Characters/sprite2.png");
+        sprite3 = new Texture("Characters/sprite3.png");
+        sprite4 = new Texture("Characters/sprite4.png");
 
-        regions[0] = new TextureRegion(texture, 5, 77, 74, 72);      // #3
-        regions[1] = new TextureRegion(texture, -1, 0, 72, 70);    // #4
-        regions[2] = new TextureRegion(texture, 88, 1, 70, 72);     // #5
-        regions[3] = new TextureRegion(texture, 170, 0, 81, 72);
-        regionsb[0] = new TextureRegion(texture, 176,152, 65, 76);
-        regionsb[1] = new TextureRegion(texture, 0, 234, 67, 70);
-        regionsb[2] = new TextureRegion(texture, 345, 82, 73, 64);
-        regionsb[3] = new TextureRegion(texture, 90, 81, 68, 69);// #6
+        float widthSprite = (float) 0.1875*MyGdxGame.WIDTH;
+        float widthSpace = (float) 0.05*MyGdxGame.WIDTH;
+        float incrementX = widthSpace;
 
-        for(int j=0;j<4;j++){
-            buttonToPlay[j]=new Sprite(regions[j].getTexture());
-            buttonToPlay2[j]=new Sprite(regionsb[j].getTexture());
-        }
+        buttonSprite1 = new Sprite(sprite1);
+        buttonSprite1.setPosition(incrementX, (float) (MyGdxGame.HEIGHT/2.5));
+        buttonSprite1.setSize(widthSprite,sprite1.getHeight());
+        incrementX += widthSprite;
+        incrementX += widthSpace;
+
+        buttonSprite2 = new Sprite(sprite2);
+        buttonSprite2.setPosition(incrementX, (float) (MyGdxGame.HEIGHT/2.5));
+        buttonSprite2.setSize(widthSprite,sprite2.getHeight());
+        incrementX += widthSprite;
+        incrementX += widthSpace;
+
+        buttonSprite3 = new Sprite(sprite3);
+        buttonSprite3.setPosition(incrementX, (float) (MyGdxGame.HEIGHT/2.5));
+        buttonSprite3.setSize(widthSprite,sprite3.getHeight());
+        incrementX += widthSprite;
+        incrementX += widthSpace;
+
+        buttonSprite4 = new Sprite(sprite4);
+        buttonSprite4.setPosition(incrementX, (float) (MyGdxGame.HEIGHT/2.5));
+        buttonSprite4.setSize(widthSprite,sprite4.getHeight());
+
+        menuButton = new Texture("StartStateResources/arrow.png");
+        buttonToMenu = new Sprite(menuButton);
+        float widthMenuButton = (float)menuButton.getWidth();
+        float heightMenuButton = (float) 0.65*menuButton.getHeight();
+        float positionPlayButton = (float)0.1*MyGdxGame.HEIGHT;
+        buttonToMenu.setPosition((MyGdxGame.WIDTH / 2) - (widthMenuButton / 2), positionPlayButton);
+        buttonToMenu.setSize(widthMenuButton,heightMenuButton);
 
     }
 
     @Override
     protected void bundleInput() {
 
-        if(Gdx.input.isKeyPressed(Input.Keys.P)) {
+        if(Gdx.input.justTouched()) {
 
-            Vector3 m = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
-            cam.unproject(m);
-            gsm.set(new GameState(gsm, "nameCharacter"));
-            dispose();
+            Vector2 m = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+            Rectangle textureBounds1 = new Rectangle(buttonSprite1.getX(),buttonSprite1.getY(),buttonSprite1.getWidth(),buttonSprite1.getHeight());
+            Rectangle textureBounds2 = new Rectangle(buttonSprite2.getX(),buttonSprite2.getY(),buttonSprite2.getWidth(),buttonSprite2.getHeight());
+            Rectangle textureBounds3 = new Rectangle(buttonSprite3.getX(),buttonSprite3.getY(),buttonSprite3.getWidth(),buttonSprite3.getHeight());
+            Rectangle textureBounds4 = new Rectangle(buttonSprite4.getX(),buttonSprite4.getY(),buttonSprite4.getWidth(),buttonSprite4.getHeight());
+            Rectangle textureBounds5 = new Rectangle(buttonToMenu.getX(),buttonToMenu.getY(),buttonToMenu.getWidth(),buttonToMenu.getHeight());
 
-        }
-            if (Gdx.input.justTouched()) {
-                Vector2 m = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-                for (int x = 0; x < 4; x++) {
-                    textureBounds[x]= new Rectangle(buttonToPlay[x].getX(), buttonToPlay[x].getY(), buttonToPlay[x].getWidth(), buttonToPlay[x].getHeight());
-                    // Rectangle textureBounds2 = new Rectangle(buttonToSelect.getX(),buttonToSelect.getY(),buttonToSelect.getWidth(),buttonToSelect.getHeight());
-                    if (textureBounds[x].contains(m.x, MyGdxGame.HEIGHT - m.y)) {
-                        Gdx.app.log("MyTag", "joder");
-                    }
-
-                }
+            if(textureBounds1.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                gsm.set(new GameState(gsm,"sprite1"));
+                dispose();
             }
 
+            if(textureBounds2.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                gsm.set(new GameState(gsm,"sprite2"));
+                dispose();
+            }
+
+            if(textureBounds3.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                gsm.set(new GameState(gsm,"sprite3"));
+                dispose();
+            }
+
+            if(textureBounds4.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                gsm.set(new GameState(gsm,"sprite4"));
+                dispose();
+            }
+
+            if(textureBounds4.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                gsm.set(new MenuState(gsm));
+                dispose();
+            }
+
+        }
 
     }
 
@@ -91,24 +124,17 @@ public class CharactersState extends State {
     public void render(SpriteBatch sb) {
 
         int widthTitle = (int)(0.85*MyGdxGame.WIDTH);
-        int heightTitle = (int)(0.85*letters.getHeight());
+        int heightTitle = (int)(0.85*title.getHeight());
         int positionTitle = (int)(0.7*MyGdxGame.HEIGHT);
 
         sb.begin();
-        sb.draw(background,0,0, MyGdxGame.WIDTH,MyGdxGame.HEIGHT);
-        sb.draw(letters, (MyGdxGame.WIDTH / 2) - (widthTitle / 2), positionTitle, widthTitle, heightTitle);
-
-        double whites=0.05*MyGdxGame.WIDTH ;
-        double widthImage=0.1875*MyGdxGame.WIDTH;
-        double incrementX=0;
-
-        for(int i=0;i<4;i++) {
-            incrementX += whites;
-            sb.draw(regions[i], (float) incrementX, (float) (MyGdxGame.HEIGHT / 2.5), (float) widthImage,regions[i].getRegionHeight());// #7
-            sb.draw(regionsb[i], (float) incrementX, (float) (MyGdxGame.HEIGHT / 3.5), (float) widthImage,regionsb[i].getRegionHeight());
-            incrementX += widthImage;
-        }
-
+        sb.draw(background, 0, 0, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
+        sb.draw(title, (MyGdxGame.WIDTH / 2) - (widthTitle / 2), positionTitle, widthTitle, heightTitle);
+        buttonSprite1.draw(sb);
+        buttonSprite2.draw(sb);
+        buttonSprite3.draw(sb);
+        buttonSprite4.draw(sb);
+        buttonToMenu.draw(sb);
         sb.end();
 
     }
@@ -116,11 +142,11 @@ public class CharactersState extends State {
     @Override
     public void dispose() {
         background.dispose();
-        letters.dispose();
-        texture.dispose();
-        for(int i=0;i<4;i++){
-           regions[i].getTexture().dispose();
-        }
+        sprite1.dispose();
+        sprite2.dispose();
+        sprite3.dispose();
+        sprite4.dispose();
+        menuButton.dispose();
     }
 
 }

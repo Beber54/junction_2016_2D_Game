@@ -26,10 +26,10 @@ public class Character {
     public Character(int x, int y, String nameSelectedCharacter){
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0,0,0);
-        characterSprite = new Texture("GameStateResources/testCharacter.png");
-        //characterSprite = new Texture("Characters/"+nameSelectedCharacter+".png");
+        //characterSprite = new Texture("GameStateResources/testCharacter.png");
+        characterSprite = new Texture("Characters/"+nameSelectedCharacter+".png");
         newPosition = new Vector3(x, y, 0);
-        bounds = new Rectangle(x, this.characterSprite.getHeight(), characterSprite.getWidth(), characterSprite.getHeight());
+        bounds = new Rectangle(x, this.characterSprite.getHeight(), MyGdxGame.WIDTH / 4, characterSprite.getHeight());
     }
 
     public void update(float dt){

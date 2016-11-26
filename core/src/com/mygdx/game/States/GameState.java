@@ -2,6 +2,7 @@ package com.mygdx.game.States;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,9 @@ import com.mygdx.game.Sprites.Character;
 import com.mygdx.game.Sprites.Obstacle;
 import com.mygdx.game.Sprites.Type;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,17 +45,20 @@ public class GameState extends State{
     public int score = 0;
     public boolean isGameOver = false;
 
-    public Type currentTypeMode = Type.Fire;
+    public Type currentTypeMode = Type.Earth;
 
     //Score
     private String scoreDisplay;
     BitmapFont scoreFont;
 
     //Life
-    private float life = 10;
+    private int life = 1;
     BitmapFont lifeFont;
     private int maxLife;
     private Texture heart = new Texture("GameStateResources/heart.png");
+
+    BitmapFont tokensFont;
+    private Texture token;
 
 
     //Obstacles
@@ -81,6 +88,8 @@ public class GameState extends State{
 
         triggerScore();
 
+        randomType(currentTypeMode);
+
         //Init the score
         scoreDisplay = "0";
         scoreFont = new BitmapFont();
@@ -88,6 +97,10 @@ public class GameState extends State{
         //Init lifes
         lifeFont = new BitmapFont();
 
+        //Tokens
+        tokensFont = new BitmapFont();
+
+        //New world
         nextWorldFont = new BitmapFont();
         countdownFont = new BitmapFont();
 
@@ -217,6 +230,8 @@ public class GameState extends State{
         Random rand = new Random();
         Type finalType = currentTypeMode;
         int randomTypeNumber = rand.nextInt((3 - 1) + 1) + 1;
+        Gdx.app.log("randomTypeNumber", String.valueOf(randomTypeNumber));
+        Gdx.app.log("randomTypeNumber", String.valueOf(currentTypeMode));
         switch (currentTypeMode){
             case Fire:
                 switch(randomTypeNumber){
@@ -234,10 +249,10 @@ public class GameState extends State{
             case Earth:
                 switch(randomTypeNumber){
                     case 1:
-                        finalType = Type.Air;
+                        finalType = Type.Fire;
                         break;
                     case 2:
-                        finalType = Type.Fire;
+                        finalType = Type.Air;
                         break;
                     case 3:
                         finalType = Type.Water;
@@ -263,14 +278,16 @@ public class GameState extends State{
                         finalType = Type.Water;
                         break;
                     case 2:
-                        finalType = Type.Fire;
+                        finalType = Type.Earth;
                         break;
                     case 3:
-                        finalType = Type.Earth;
+                        finalType = Type.Fire;
                         break;
                 }
                 break;
         }
+        Gdx.app.log("current type", String.valueOf(finalType));
+        this.currentTypeMode = finalType;
         return finalType;
     }
 
@@ -332,7 +349,11 @@ public class GameState extends State{
         }
 
         life = life + changingLifes;
-        if(life < 0) life = 0;
+        if(life == 0 || life < 0){
+            life = 0;
+            //GAME OVER TO DO
+            saveTokens(score);
+        }
         currentSB.begin();
         lifeFont.draw(currentSB, String.valueOf(life), 10, MyGdxGame.HEIGHT - lifeFont.getLineHeight());
         currentSB.end();
@@ -347,11 +368,15 @@ public class GameState extends State{
         sb.draw(character.getCharacter(), character.getPosition().x, character.getPosition().y, MyGdxGame.WIDTH/4, character.characterSprite.getHeight());
         sb.draw(block.getTestTexture(), block.getPosition().x, block.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
         scoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        scoreFont.draw(sb, scoreDisplay, MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - scoreFont.getLineHeight());
-        sb.draw(heart,20,MyGdxGame.HEIGHT - lifeFont.getLineHeight(),lifeFont.getLineHeight(),lifeFont.getLineHeight());
+        scoreFont.getData().setScale(3,3);
+        scoreFont.draw(sb, scoreDisplay, MyGdxGame.WIDTH / 2 - scoreFont.getSpaceWidth(), MyGdxGame.HEIGHT - 10);
+        sb.draw(heart,40,MyGdxGame.HEIGHT - (lifeFont.getLineHeight()*2),lifeFont.getLineHeight()*2,lifeFont.getLineHeight()*2);
         lifeFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        lifeFont.draw(sb, String.valueOf(life), 10, MyGdxGame.HEIGHT - lifeFont.getLineHeight());
+        lifeFont.getData().setScale((float)1.3, (float)1.3);
+        lifeFont.draw(sb, String.valueOf(life), 10, MyGdxGame.HEIGHT - 10);
 
+        tokensFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        tokensFont.draw(sb, String.valueOf(MenuState.getTokens()), MyGdxGame.WIDTH - 100, MyGdxGame.HEIGHT - tokensFont.getLineHeight());
         for(final Obstacle obs: obstacles){
             sb.draw(obs.getTestTexture(), obs.getPosition().x, obs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
         }
@@ -392,5 +417,30 @@ public class GameState extends State{
                 scoreDisplay = String.valueOf(score);
             }
         }, 100, 100 );
+    }
+
+    public void saveTokens(int score){
+        try{
+            int tokensToAdd = 0;
+            if(score < 200){
+                tokensToAdd = 10;
+            }else{
+                tokensToAdd = (int)Math.ceil(score/100);
+            }
+            Gdx.app.log("save tokens SCORE",String.valueOf(score));
+            FileHandle file = Gdx.files.local("Data/tokens.txt");
+
+
+            int currentTokens = MenuState.getTokens();
+            String finalTokens = String.valueOf(currentTokens + tokensToAdd);
+            Gdx.app.log("tokens total ",String.valueOf(currentTokens + tokensToAdd));
+            Gdx.app.log("save tokens total ",finalTokens);
+            file.writeString(finalTokens, false);
+
+
+        }catch(Exception ex){
+            Gdx.app.log("save tokens","failure");
+            ex.printStackTrace();
+        }
     }
 }

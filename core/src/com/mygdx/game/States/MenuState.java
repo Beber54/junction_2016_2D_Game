@@ -3,6 +3,7 @@ package com.mygdx.game.States;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,6 +13,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MyGdxGame;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Sprites.CharactersState;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 
 public class MenuState extends State {
@@ -101,5 +106,14 @@ public class MenuState extends State {
         playButton.dispose();
         buttonToPlay.getTexture().dispose();
         buttonToSelect.getTexture().dispose();
+    }
+
+    public static int getTokens(){
+        int tokens = 0;
+        FileHandle file = Gdx.files.internal("Data/tokens.txt");
+        String text = file.readString();
+        tokens = Integer.parseInt(text);
+
+        return tokens;
     }
 }

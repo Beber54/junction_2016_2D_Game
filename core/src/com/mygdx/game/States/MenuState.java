@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MyGdxGame;
+import com.badlogic.gdx.math.Rectangle;
+
 
 public class MenuState extends State {
 
@@ -31,7 +34,7 @@ public class MenuState extends State {
         float heightPlayButton = (float) 0.65*playButton.getHeight();
         float positionPlayButton = (float)0.1*MyGdxGame.HEIGHT;
         button = new Sprite(playButton);
-        button.setFlip(false,true);
+        //button.setFlip(false,true);
         button.setPosition((MyGdxGame.WIDTH / 2) - (widthPlayButton / 2), positionPlayButton);
         button.setSize(widthPlayButton,heightPlayButton);
 
@@ -53,6 +56,27 @@ public class MenuState extends State {
                     gsm.set(new GameState(gsm));
                     dispose();//}
              //  }
+            //}
+
+        }
+
+        if(Gdx.input.justTouched()) {
+
+            Vector2 m = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+
+            Gdx.app.log("abscisse clic", String.valueOf(m.x));
+            Gdx.app.log("ordonnée clic", String.valueOf(MyGdxGame.HEIGHT  - m.y));
+            Rectangle textureBounds = new Rectangle(button.getX(),button.getY(),button.getWidth(),button.getHeight());
+            // double checkPositionY = 0.9*MyGdxGame.HEIGHT - (MyGdxGame.HEIGHT-0.9*MyGdxGame.HEIGHT);
+            // if((Gdx.input.getX() > button.getX()) && (Gdx.input.getX() < button.getX() + button.getWidth())) {
+            //  if((Gdx.input.getY() > button.getY())) {/*&& (Gdx.input.getY() < 0.1*MyGdxGame.HEIGHT)) {*/
+            if(textureBounds.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+                Gdx.app.log("abscisse clic", String.valueOf(m.x));
+                Gdx.app.log("ordonnée clic", String.valueOf(m.y));
+                gsm.set(new GameState(gsm));
+                dispose();
+             }
+            //  }
             //}
 
         }

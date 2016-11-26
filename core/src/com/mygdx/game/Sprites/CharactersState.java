@@ -1,4 +1,4 @@
-package com.mygdx.game.States;
+package com.mygdx.game.Sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,6 +11,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.States.GameState;
+import com.mygdx.game.States.GameStateManager;
+import com.mygdx.game.States.State;
 
 /**
  * Created by Ian on 26/11/2016.
@@ -26,21 +29,16 @@ public class CharactersState extends State {
     private Sprite buttonToPlay[]=new Sprite[4];
     private Sprite buttonToPlay2[]=new Sprite[4];
     Rectangle textureBounds[]= new Rectangle[4];
-   // private Texture c2;
-    //private Texture c3;
-    //private Texture c4;
 
     OrthographicCamera cam;
     Vector3 mouse;
 
     public CharactersState(GameStateManager gsm) {
-        super(gsm);
-        cam = new OrthographicCamera();
-        //mouse = new Vector3();
 
+        super(gsm);
         texture = new Texture(Gdx.files.internal("Characters/last-guardian-sprites1.png"));
-        background=new Texture(Gdx.files.internal("StartStateResources/background.jpg"));
-        letters=new Texture(Gdx.files.internal("Characters/Select-character.png"));
+        background = new Texture(Gdx.files.internal("StartStateResources/background.jpg"));
+        letters = new Texture(Gdx.files.internal("Characters/Select-character.png"));
 
         regions[0] = new TextureRegion(texture, 5, 77, 74, 72);      // #3
         regions[1] = new TextureRegion(texture, -1, 0, 72, 70);    // #4
@@ -50,6 +48,7 @@ public class CharactersState extends State {
         regionsb[1] = new TextureRegion(texture, 0, 234, 67, 70);
         regionsb[2] = new TextureRegion(texture, 345, 82, 73, 64);
         regionsb[3] = new TextureRegion(texture, 90, 81, 68, 69);// #6
+
         for(int j=0;j<4;j++){
             buttonToPlay[j]=new Sprite(regions[j].getTexture());
             buttonToPlay2[j]=new Sprite(regionsb[j].getTexture());
@@ -59,8 +58,6 @@ public class CharactersState extends State {
 
     @Override
     protected void bundleInput() {
-        //Rectangle bounds = new Rectangle(regions[0].getRegionX(), regions[0].getRegionY(),
-               // regions[0] .getRegionWidth(), regions[0].getRegionHeight());
 
         if(Gdx.input.isKeyPressed(Input.Keys.P)) {
 
@@ -71,17 +68,13 @@ public class CharactersState extends State {
 
         }
             if (Gdx.input.justTouched()) {
-                //Gdx.app.log("x:"+ Integer.toString(Gdx.input.getX())+"y:"+Integer.toString(Gdx.input.getX()));
                 Vector2 m = new Vector2(Gdx.input.getX(), Gdx.input.getY());
                 for (int x = 0; x < 4; x++) {
                     textureBounds[x]= new Rectangle(buttonToPlay[x].getX(), buttonToPlay[x].getY(), buttonToPlay[x].getWidth(), buttonToPlay[x].getHeight());
                     // Rectangle textureBounds2 = new Rectangle(buttonToSelect.getX(),buttonToSelect.getY(),buttonToSelect.getWidth(),buttonToSelect.getHeight());
                     if (textureBounds[x].contains(m.x, MyGdxGame.HEIGHT - m.y)) {
                         Gdx.app.log("MyTag", "joder");
-                       // gsm.set(new Ejemplo(gsm, 2));
-                        //dispose();
                     }
-                    //Gdx.app.log("MyTag", "my informative message");
 
                 }
             }
@@ -96,21 +89,27 @@ public class CharactersState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
+
+        int widthTitle = (int)(0.85*MyGdxGame.WIDTH);
+        int heightTitle = (int)(0.85*letters.getHeight());
+        int positionTitle = (int)(0.7*MyGdxGame.HEIGHT);
+
         sb.begin();
         sb.draw(background,0,0, MyGdxGame.WIDTH,MyGdxGame.HEIGHT);
-        sb.draw(letters,(MyGdxGame.WIDTH/12),MyGdxGame.HEIGHT/2);
+        sb.draw(letters, (MyGdxGame.WIDTH / 2) - (widthTitle / 2), positionTitle, widthTitle, heightTitle);
+
         double whites=0.05*MyGdxGame.WIDTH ;
         double widthImage=0.1875*MyGdxGame.WIDTH;
         double incrementX=0;
-        for(int i=0;i<4;i++) {
-            incrementX+=whites;
-            sb.draw(regions[i], (float) incrementX, MyGdxGame.HEIGHT / 4, (float) widthImage,regions[i].getRegionHeight());// #7
-            sb.draw(regionsb[i], (float) incrementX, MyGdxGame.HEIGHT / 7, (float) widthImage,regionsb[i].getRegionHeight());
-            incrementX+=widthImage;
 
+        for(int i=0;i<4;i++) {
+            incrementX += whites;
+            sb.draw(regions[i], (float) incrementX, (float) (MyGdxGame.HEIGHT / 2.5), (float) widthImage,regions[i].getRegionHeight());// #7
+            sb.draw(regionsb[i], (float) incrementX, (float) (MyGdxGame.HEIGHT / 3.5), (float) widthImage,regionsb[i].getRegionHeight());
+            incrementX += widthImage;
         }
+
         sb.end();
-//
 
     }
 
@@ -122,8 +121,6 @@ public class CharactersState extends State {
         for(int i=0;i<4;i++){
            regions[i].getTexture().dispose();
         }
-
-        //selectCharacterButton.dispose();
     }
 
 }

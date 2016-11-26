@@ -18,7 +18,7 @@ import java.util.Random;
 public class Obstacle {
 
 
-    public int speed = -1;
+    public int speed = -400;
 
     private Vector2 position;
     private Vector2 velocity;
@@ -34,16 +34,16 @@ public class Obstacle {
         testTexture = new Texture("GameStateResources/block.png");
         switch(this.elementType){
             case Fire:
-                testTexture = new Texture("GameStateResources/fire.png");
+                testTexture = new Texture("GameStateResources/spriteFire.png");
                 break;
             case Earth:
-                testTexture = new Texture("GameStateResources/earth.png");
+                testTexture = new Texture("GameStateResources/spriteEarth.png");
                 break;
             case Air:
-                testTexture = new Texture("GameStateResources/air.png");
+                testTexture = new Texture("GameStateResources/spriteAir.png");
                 break;
             case Water:
-                testTexture = new Texture("GameStateResources/water.png");
+                testTexture = new Texture("GameStateResources/spriteWater.png");
                 break;
             case ChangingMode:
                 testTexture = new Texture("GameStateResources/blockChanging.jpg");
@@ -52,12 +52,12 @@ public class Obstacle {
         }
 
         bounds = new Rectangle(position.x, MyGdxGame.HEIGHT - (MyGdxGame.HEIGHT - testTexture.getHeight()), testTexture.getWidth(), testTexture.getHeight());
+        velocity.add(0, speed);
     }
 
 
 
     public void update(float dt){
-        velocity.add(0, speed);
         velocity.scl(dt);
         position.add(0, velocity.y);
         velocity.scl(1/dt);

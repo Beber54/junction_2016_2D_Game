@@ -51,6 +51,8 @@ public class GameState extends State{
     private float life = 10;
     BitmapFont lifeFont;
     private int maxLife;
+    private Texture heart = new Texture("GameStateResources/heart.png");
+
 
     //Obstacles
     private int totalObstaclesSpawned = 0;
@@ -65,9 +67,9 @@ public class GameState extends State{
 
     private Music music;
 
-    public GameState(GameStateManager gsm) {
+    public GameState(GameStateManager gsm, String nameSelectedCharacter) {
         super(gsm);
-        character = new Character(MyGdxGame.WIDTH/2,0);
+        character = new Character(MyGdxGame.WIDTH/2,0, nameSelectedCharacter);
         block = new Obstacle(0, MyGdxGame.HEIGHT, randomType(currentTypeMode));
         background = new Texture("StartStateResources/background.jpg");
 
@@ -85,6 +87,9 @@ public class GameState extends State{
 
         //Init lifes
         lifeFont = new BitmapFont();
+
+        nextWorldFont = new BitmapFont();
+        countdownFont = new BitmapFont();
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Music/retro.mp3"));
         music.setLooping(true);
@@ -129,12 +134,11 @@ public class GameState extends State{
         for(int i = 0; i < obstacles.size; i++) {
 
             obstacles.get(i).update(dt);
-
             if (obstacles.get(i).getPosition().y < 0) {
+                totalObstaclesSpawned ++;
                 if(obstacles.size < OBSTACLE_COUNT) {
                     obstacles.get(i).getPosition().x = randomPosX();
                     obstacles.get(i).getPosition().y = randomPosY();
-                    totalObstaclesSpawned++;
                     appearChangingModeObstacle(totalObstaclesSpawned);
                     //obstacles.set(i, obstacles.get(i));
                 }
@@ -143,13 +147,12 @@ public class GameState extends State{
             if((obstacles.get(i).getPosition().y < character.characterSprite.getHeight())
                     && (obstacles.get(i).getPosition().x == character.getPosition().x)) {
 
-
                 //Check if this is a trap obstacle or not
                 if(obstacles.get(i).getElementType() == ChangingMode){
                     //Changing the mode
                     switch(randomType(currentTypeMode)){
                         case Fire:
-                            background = new Texture("GameStateResources/backgroundFire.gif");
+                            background = new Texture("GameStateResources/backgroundFire.png");
                             nextWorld = "Fire World";
                             break;
                         case Water:
@@ -166,30 +169,32 @@ public class GameState extends State{
                             break;
                     }
                     currentSB.begin();
-                    currentSB.draw(background,0,0);
                     //Clearing the game level
                     obstacles.clear();
                     //ADD WARNING AND COUNTDOWN
                     nextWorldFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-                    nextWorldFont.getData().setScale(20, 30);
-                    nextWorldFont.draw(currentSB, nextWorld, MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 200 - lifeFont.getLineHeight());
+                    nextWorldFont.draw(currentSB, nextWorld, MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - 200 - nextWorldFont.getLineHeight());
                     countdownFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-                    countdownFont.getData().setScale(40, 70);
-                    countdownFont.draw(currentSB, "1", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 400 - lifeFont.getLineHeight());
-                    try {
+                    countdownFont.draw(currentSB, "1", MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - 400 - countdownFont.getLineHeight());
+                    /*try {
                         Thread.sleep(1000);
-                        countdownFont.draw(currentSB, "2", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 400 - lifeFont.getLineHeight());
+                        countdownFont.draw(currentSB, "2", MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - 400 - countdownFont.getLineHeight());
                         Thread.sleep(1000);
-                        countdownFont.draw(currentSB, "3", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 400 - lifeFont.getLineHeight());
+                        countdownFont.draw(currentSB, "3", MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - 400 - countdownFont.getLineHeight());
                         Thread.sleep(1000);
-                        countdownFont.draw(currentSB, "", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 400 - lifeFont.getLineHeight());
-                        nextWorldFont.draw(currentSB, "", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 200 - lifeFont.getLineHeight());
+                        //countdownFont.draw(currentSB, "", MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - 400 - countdownFont.getLineHeight());
+                        //nextWorldFont.draw(currentSB, "", MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - 200 - nextWorldFont.getLineHeight());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }
+                    }*/
+                    currentSB.draw(background,0,0);
+                    //Reset of the height of y axis
+                    previousPosY = 0;
                     //Relaunching the game
                     for(int j= 1; j < OBSTACLE_COUNT; j++ ){
-                        obstacles.add(new Obstacle(randomPosX(), randomPosY(), randomType(currentTypeMode)));
+                        Obstacle newObs = new Obstacle(randomPosX(), randomPosY(), randomType(currentTypeMode));
+                        obstacles.add(newObs);
+                        currentSB.draw(newObs.getTestTexture(), newObs.getPosition().x, newObs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
                     }
                     currentSB.end();
 
@@ -341,16 +346,14 @@ public class GameState extends State{
         sb.draw(background, 0,0);
         sb.draw(character.getCharacter(), character.getPosition().x, character.getPosition().y, MyGdxGame.WIDTH/4, character.characterSprite.getHeight());
         sb.draw(block.getTestTexture(), block.getPosition().x, block.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
-        totalObstaclesSpawned ++;
         scoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         scoreFont.draw(sb, scoreDisplay, MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - scoreFont.getLineHeight());
-
+        sb.draw(heart,20,MyGdxGame.HEIGHT - lifeFont.getLineHeight(),lifeFont.getLineHeight(),lifeFont.getLineHeight());
         lifeFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         lifeFont.draw(sb, String.valueOf(life), 10, MyGdxGame.HEIGHT - lifeFont.getLineHeight());
 
         for(final Obstacle obs: obstacles){
             sb.draw(obs.getTestTexture(), obs.getPosition().x, obs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
-            totalObstaclesSpawned ++;
         }
 
         sb.end();
@@ -363,10 +366,11 @@ public class GameState extends State{
     }
 
     public void appearChangingModeObstacle(int totalObstaclesSpawned){
-        Gdx.app.log("appearChangingModeObstacle", "true");
-        if(totalObstaclesSpawned == 1 || totalObstaclesSpawned == 50 || totalObstaclesSpawned % 50 == 0){
+        Gdx.app.log("totalObstaclesSpawned", String.valueOf(totalObstaclesSpawned));
+        if( totalObstaclesSpawned % 50 == 0){
             Gdx.app.log("appearChangingModeObstacle", "with 50 ratio");
             ChangingModeObstacle randomChange = new ChangingModeObstacle(randomPosX(), randomPosY());
+            obstacles.add(randomChange);
              currentSB.begin();
              currentSB.draw(randomChange.getTestTexture(), randomChange.getPosition().x, randomChange.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
              Gdx.app.log("appearChangingModeObstacle position", String.valueOf(randomChange.getPosition().x));

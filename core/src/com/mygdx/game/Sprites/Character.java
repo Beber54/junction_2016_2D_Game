@@ -23,10 +23,11 @@ public class Character {
 
     private Vector3 newPosition;
 
-    public Character(int x, int y){
+    public Character(int x, int y, String nameSelectedCharacter){
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0,0,0);
         characterSprite = new Texture("GameStateResources/testCharacter.png");
+        //characterSprite = new Texture("Characters/"+nameSelectedCharacter+".png");
         newPosition = new Vector3(x, y, 0);
         bounds = new Rectangle(x, this.characterSprite.getHeight(), characterSprite.getWidth(), characterSprite.getHeight());
     }

@@ -66,7 +66,7 @@ public class CharactersState extends State {
 
             Vector3 m = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
             cam.unproject(m);
-            gsm.set(new GameState(gsm));
+            gsm.set(new GameState(gsm, "nameCharacter"));
             dispose();
 
         }

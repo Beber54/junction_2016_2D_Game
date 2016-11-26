@@ -53,7 +53,7 @@ public class MenuState extends State {
            // if((Gdx.input.getX() > button.getX()) && (Gdx.input.getX() < button.getX() + button.getWidth())) {
            //  if((Gdx.input.getY() > button.getY())) {/*&& (Gdx.input.getY() < 0.1*MyGdxGame.HEIGHT)) {*/
                 // if(textureBounds.contains(m.x,m.y)) {
-                    gsm.set(new GameState(gsm));
+                    gsm.set(new GameState(gsm, "nameCharacter"));
                     dispose();//}
              //  }
             //}
@@ -73,7 +73,7 @@ public class MenuState extends State {
             if(textureBounds.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
                 Gdx.app.log("abscisse clic", String.valueOf(m.x));
                 Gdx.app.log("ordonnée clic", String.valueOf(m.y));
-                gsm.set(new GameState(gsm));
+                gsm.set(new GameState(gsm, "nameCharacter"));
                 dispose();
              }
             //  }

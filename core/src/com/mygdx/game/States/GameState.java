@@ -1,6 +1,7 @@
 package com.mygdx.game.States;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -62,6 +63,8 @@ public class GameState extends State{
 
     private Array<Obstacle> obstacles;
 
+    private Music music;
+
     public GameState(GameStateManager gsm) {
         super(gsm);
         character = new Character(MyGdxGame.WIDTH/2,0);
@@ -82,6 +85,11 @@ public class GameState extends State{
 
         //Init lifes
         lifeFont = new BitmapFont();
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("Music/retro.mp3"));
+        music.setLooping(true);
+        music.play();
+
     }
 
     private int randomPosX(){
@@ -319,6 +327,7 @@ public class GameState extends State{
         }
 
         life = life + changingLifes;
+        if(life < 0) life = 0;
         currentSB.begin();
         lifeFont.draw(currentSB, String.valueOf(life), 10, MyGdxGame.HEIGHT - lifeFont.getLineHeight());
         currentSB.end();

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.Sprites.ChangingModeObstacle;
 import com.mygdx.game.Sprites.Character;
 import com.mygdx.game.Sprites.Obstacle;
 import com.mygdx.game.Sprites.Type;
@@ -14,6 +15,8 @@ import com.mygdx.game.Sprites.Type;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.mygdx.game.Sprites.Type.ChangingMode;
 
 /**
  * Created by Corentin on 26/11/2016.
@@ -39,13 +42,23 @@ public class GameState extends State{
 
     public Type currentTypeMode = Type.Fire;
 
+    //Score
     private String scoreDisplay;
     BitmapFont scoreFont;
 
+    //Life
     private float life = 10;
     BitmapFont lifeFont;
     private int maxLife;
 
+    //Obstacles
+    private int totalObstaclesSpawned = 0;
+
+    //Changing the world
+    private String nextWorld;
+    BitmapFont nextWorldFont;
+    private String countdown;
+    BitmapFont countdownFont;
 
     private Array<Obstacle> obstacles;
 
@@ -61,7 +74,7 @@ public class GameState extends State{
             obstacles.add(new Obstacle(randomPosX(), randomPosY(), randomType(currentTypeMode)));
         }
 
-
+        triggerScore();
 
         //Init the score
         scoreDisplay = "0";
@@ -113,19 +126,76 @@ public class GameState extends State{
                 if(obstacles.size < OBSTACLE_COUNT) {
                     obstacles.get(i).getPosition().x = randomPosX();
                     obstacles.get(i).getPosition().y = randomPosY();
+                    totalObstaclesSpawned++;
+                    appearChangingModeObstacle(totalObstaclesSpawned);
                     //obstacles.set(i, obstacles.get(i));
                 }
             }
             boolean isInCollision = false;
             if((obstacles.get(i).getPosition().y < character.characterSprite.getHeight())
                     && (obstacles.get(i).getPosition().x == character.getPosition().x)) {
-                Gdx.app.log("collides", "true");
-                isInCollision = true;
 
-                //Update the life of the player
-                do {
+
+                //Check if this is a trap obstacle or not
+                if(obstacles.get(i).getElementType() == ChangingMode){
+                    //Changing the mode
+                    switch(randomType(currentTypeMode)){
+                        case Fire:
+                            background = new Texture("GameStateResources/backgroundFire.gif");
+                            nextWorld = "Fire World";
+                            break;
+                        case Water:
+                            background = new Texture("GameStateResources/backgroundWater.jpg");
+                            nextWorld = "Water World";
+                            break;
+                        case Earth:
+                            background = new Texture("GameStateResources/backgroundEarth.jpg");
+                            nextWorld = "Earth World";
+                            break;
+                        case Air:
+                            background = new Texture("GameStateResources/backgroundAir.jpg");
+                            nextWorld = "Air World";
+                            break;
+                    }
+                    currentSB.begin();
+                    currentSB.draw(background,0,0);
+                    //Clearing the game level
+                    obstacles.clear();
+                    //ADD WARNING AND COUNTDOWN
+                    nextWorldFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+                    nextWorldFont.getData().setScale(20, 30);
+                    nextWorldFont.draw(currentSB, nextWorld, MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 200 - lifeFont.getLineHeight());
+                    countdownFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+                    countdownFont.getData().setScale(40, 70);
+                    countdownFont.draw(currentSB, "1", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 400 - lifeFont.getLineHeight());
+                    try {
+                        Thread.sleep(1000);
+                        countdownFont.draw(currentSB, "2", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 400 - lifeFont.getLineHeight());
+                        Thread.sleep(1000);
+                        countdownFont.draw(currentSB, "3", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 400 - lifeFont.getLineHeight());
+                        Thread.sleep(1000);
+                        countdownFont.draw(currentSB, "", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 400 - lifeFont.getLineHeight());
+                        nextWorldFont.draw(currentSB, "", MyGdxGame.WIDTH, MyGdxGame.HEIGHT - 200 - lifeFont.getLineHeight());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //Relaunching the game
+                    for(int j= 1; j < OBSTACLE_COUNT; j++ ){
+                        obstacles.add(new Obstacle(randomPosX(), randomPosY(), randomType(currentTypeMode)));
+                    }
+                    currentSB.end();
+
+                }else {
+                    //Update the life of the player
                     updateLife(obstacles.get(i).getElementType(), currentTypeMode);
-                }while(!isInCollision);
+                    obstacles.get(i).update(dt);
+                    float y = obstacles.get(i).getPosition().y;
+
+                    while(y > -obstacles.get(i).getTestTexture().getHeight()) {
+                        obstacles.get(i).update(dt);
+                        y = obstacles.get(i).getPosition().y;
+                    }
+                }
             }
         }
     }
@@ -262,7 +332,7 @@ public class GameState extends State{
         sb.draw(background, 0,0);
         sb.draw(character.getCharacter(), character.getPosition().x, character.getPosition().y, MyGdxGame.WIDTH/4, character.characterSprite.getHeight());
         sb.draw(block.getTestTexture(), block.getPosition().x, block.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
-
+        totalObstaclesSpawned ++;
         scoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         scoreFont.draw(sb, scoreDisplay, MyGdxGame.WIDTH / 2, MyGdxGame.HEIGHT - scoreFont.getLineHeight());
 
@@ -271,6 +341,7 @@ public class GameState extends State{
 
         for(final Obstacle obs: obstacles){
             sb.draw(obs.getTestTexture(), obs.getPosition().x, obs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
+            totalObstaclesSpawned ++;
         }
 
         sb.end();
@@ -282,22 +353,31 @@ public class GameState extends State{
 
     }
 
+    public void appearChangingModeObstacle(int totalObstaclesSpawned){
+        Gdx.app.log("appearChangingModeObstacle", "true");
+        if(totalObstaclesSpawned == 1 || totalObstaclesSpawned == 50 || totalObstaclesSpawned % 50 == 0){
+            Gdx.app.log("appearChangingModeObstacle", "with 50 ratio");
+            ChangingModeObstacle randomChange = new ChangingModeObstacle(randomPosX(), randomPosY());
+             currentSB.begin();
+             currentSB.draw(randomChange.getTestTexture(), randomChange.getPosition().x, randomChange.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
+             Gdx.app.log("appearChangingModeObstacle position", String.valueOf(randomChange.getPosition().x));
+             Gdx.app.log("appearChangingModeObstacle position", String.valueOf(randomChange.getPosition().y));
+             currentSB.end();
+         }
+    }
+
+
     public void triggerScore(){
         score = 0;
+        Timer timer = new Timer();
 
-        new Timer().schedule(new TimerTask()
-        {
+        timer.schedule(new TimerTask() {
 
             @Override
-            public void run()
-            {
-
-                    score += 10;
-                    scoreDisplay = String.valueOf(score);
-                    Gdx.app.log("score", String.valueOf(score));
-
+            public void run() {
+                score += 1;
+                scoreDisplay = String.valueOf(score);
             }
-        }, 1000 );
-
+        }, 100, 100 );
     }
 }

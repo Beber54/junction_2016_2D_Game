@@ -45,6 +45,9 @@ public class Obstacle {
             case Water:
                 testTexture = new Texture("GameStateResources/water.png");
                 break;
+            case ChangingMode:
+                testTexture = new Texture("GameStateResources/blockChanging.jpg");
+                break;
 
         }
 

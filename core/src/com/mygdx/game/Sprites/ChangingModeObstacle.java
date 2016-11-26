@@ -31,6 +31,6 @@ public class ChangingModeObstacle extends Obstacle {
 
     @Override
     public Texture getTestTexture() {
-        return super.getTestTexture();
+        return new Texture("GameStateResources/blockChanging.jpg");
     }
 }

@@ -42,7 +42,7 @@ public class CharactersState extends State {
     protected void bundleInput() {
 
         if (Gdx.input.isTouched()) {
-            gsm.set(new Ejemplo(gsm,2));
+            //gsm.set(new Ejemplo(gsm,2));
         }
 
     }

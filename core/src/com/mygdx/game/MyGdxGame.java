@@ -24,7 +24,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
 		//FOR DEBUG
-		gsm.push(new GameState(gsm));
+		gsm.push(new MenuState(gsm));
 	}
 
 	@Override

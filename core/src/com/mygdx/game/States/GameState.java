@@ -293,6 +293,7 @@ public class GameState extends State{
     }
 
     public float updateLife(Type elementTypeCatched, Type currentTypeMode){
+        life = 0;
         int changingLifes = 0;
         switch(currentTypeMode){
             case Fire:
@@ -352,7 +353,7 @@ public class GameState extends State{
         life = life + changingLifes;
         if(life == 0 || life < 0){
             life = 0;
-            //GAME OVER TO DO
+            gsm.set(new EndState(gsm));
             saveTokens(score);
         }
         currentSB.begin();

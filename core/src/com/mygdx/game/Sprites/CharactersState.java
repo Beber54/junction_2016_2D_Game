@@ -106,7 +106,7 @@ public class CharactersState extends State {
                 dispose();
             }
 
-            if(textureBounds4.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
+            if(textureBounds5.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
                 gsm.set(new MenuState(gsm));
                 dispose();
             }

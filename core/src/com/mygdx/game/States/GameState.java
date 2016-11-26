@@ -22,7 +22,9 @@ public class GameState extends State{
 
     private Vector3 touch;
 
-    private static final int OBSTACLE_COUNT = 4;
+    private int previousPosY = 0;
+
+    private static final int OBSTACLE_COUNT = 25;
 
 
     private Array<Obstacle> obstacles;
@@ -36,14 +38,22 @@ public class GameState extends State{
         obstacles = new Array<Obstacle>();
 
         for(int i= 1; i < OBSTACLE_COUNT; i++ ){
-            obstacles.add(new Obstacle(randomPos(), MyGdxGame.WIDTH - block.getTestTexture().getHeight()));
+            obstacles.add(new Obstacle(randomPosX(), randomPosY()));
         }
     }
 
-    private int randomPos(){
-        double randomNumber = Math.floor(Math.random() * 3);
+    private int randomPosX(){
+        double randomNumber = Math.floor(Math.random() * 4);
         int tempNumber = (int) randomNumber;
         int finalPos = tempNumber * MyGdxGame.WIDTH/4;
+        return finalPos;
+    }
+
+    private int randomPosY(){
+        //double randomNumber = Math.floor((Math.random() * 4) * (MyGdxGame.HEIGHT - block.getTestTexture().getHeight()));
+        int finalPos = (int) (MyGdxGame.HEIGHT - block.getTestTexture().getHeight()) + previousPosY;
+        Gdx.app.log("randomPosY",String.valueOf(finalPos));
+        previousPosY += 1.5 * block.getTestTexture().getHeight();
         return finalPos;
     }
 
@@ -69,6 +79,7 @@ public class GameState extends State{
         block.update(dt);
 
         for(Obstacle obs : obstacles){
+            obs.update(dt);
             if(obs.getPosition().y < 0){
                 obs = new Obstacle(0,MyGdxGame.HEIGHT);
             }
@@ -81,17 +92,20 @@ public class GameState extends State{
     }
 
     @Override
-    public void render(SpriteBatch sb) {
+    public void render(final SpriteBatch sb) {
         sb.begin();
         sb.draw(background, 0,0);
         sb.draw(character.getCharacter(), character.getPosition().x, character.getPosition().y, MyGdxGame.WIDTH/4, character.characterSprite.getHeight());
         sb.draw(block.getTestTexture(), block.getPosition().x, block.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
-        for(Obstacle obs:obstacles){
-            //sb.draw(obs.getTestTexture(), obs.getPosition().x, obs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
+
+        for(final Obstacle obs: obstacles){
+            sb.draw(obs.getTestTexture(), obs.getPosition().x, obs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
         }
 
         sb.end();
     }
+
+
 
     public void dispose(){
 

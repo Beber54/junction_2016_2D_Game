@@ -18,7 +18,7 @@ import java.util.Random;
 public class Obstacle {
 
 
-    public int speed = -15;
+    public int speed = -4;
 
 
 

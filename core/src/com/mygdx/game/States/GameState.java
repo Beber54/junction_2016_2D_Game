@@ -17,6 +17,7 @@ import com.mygdx.game.Sprites.Type;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -365,7 +366,7 @@ public class GameState extends State{
         currentSB = sb;
         sb.begin();
         sb.draw(background, 0,0);
-        sb.draw(character.getCharacter(), character.getPosition().x, character.getPosition().y, MyGdxGame.WIDTH/4, character.characterSprite.getHeight());
+        sb.draw(character.getCharacter(), character.getPosition().x, character.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4f);
         sb.draw(block.getTestTexture(), block.getPosition().x, block.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
         scoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         scoreFont.getData().setScale(3,3);
@@ -442,5 +443,35 @@ public class GameState extends State{
             Gdx.app.log("save tokens","failure");
             ex.printStackTrace();
         }
+    }
+
+    public void saveHighScore(int scorePassed){
+        // determine the high score
+        int highScore = getHighScore();
+        FileHandle file = Gdx.files.internal("highscores.txt");
+        String text = file.readString();
+        while (text != null)                 // read the score file line by line
+        {
+            try {
+                int score = Integer.parseInt(text.trim());   // parse each line as an int
+                if (score > highScore)                       // and keep track of the largest
+                {
+                    highScore = score;
+                }
+            } catch (NumberFormatException e1) {
+                // ignore invalid scores
+                //System.err.println("ignoring invalid score: " + line);
+            }
+            text = file.readString();
+        }
+    }
+
+    public int getHighScore(){
+        int highScore;
+        FileHandle handle = Gdx.files.local("words.txt");
+        String text = handle.readString();
+        String wordsArray[] = text.split("\\n");
+        highScore = Integer.parseInt(wordsArray[0]);
+        return highScore;
     }
 }

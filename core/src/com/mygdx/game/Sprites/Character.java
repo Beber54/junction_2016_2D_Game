@@ -29,7 +29,7 @@ public class Character {
         //characterSprite = new Texture("GameStateResources/testCharacter.png");
         characterSprite = new Texture("Characters/"+nameSelectedCharacter+".png");
         newPosition = new Vector3(x, y, 0);
-        bounds = new Rectangle(x, this.characterSprite.getHeight(), MyGdxGame.WIDTH / 4, characterSprite.getHeight());
+        bounds = new Rectangle(x, this.characterSprite.getHeight(), MyGdxGame.WIDTH / 4, MyGdxGame.WIDTH/4);
     }
 
     public void update(float dt){

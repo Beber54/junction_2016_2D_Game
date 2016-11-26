@@ -14,8 +14,10 @@ import com.mygdx.game.Sprites.Character;
 import com.mygdx.game.Sprites.Obstacle;
 import com.mygdx.game.Sprites.Type;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
@@ -293,6 +295,7 @@ public class GameState extends State{
     }
 
     public float updateLife(Type elementTypeCatched, Type currentTypeMode){
+        life = 0; //DEBUG
         int changingLifes = 0;
         switch(currentTypeMode){
             case Fire:
@@ -352,8 +355,11 @@ public class GameState extends State{
         life = life + changingLifes;
         if(life == 0 || life < 0){
             life = 0;
+            //GAME OVER TO DO
             gsm.set(new EndState(gsm));
+            saveHighScore(score);
             saveTokens(score);
+            dispose();
         }
         currentSB.begin();
         lifeFont.draw(currentSB, String.valueOf(life), 10, MyGdxGame.HEIGHT - lifeFont.getLineHeight());
@@ -447,31 +453,33 @@ public class GameState extends State{
 
     public void saveHighScore(int scorePassed){
         // determine the high score
-        int highScore = getHighScore();
-        FileHandle file = Gdx.files.internal("highscores.txt");
-        String text = file.readString();
-        while (text != null)                 // read the score file line by line
-        {
-            try {
-                int score = Integer.parseInt(text.trim());   // parse each line as an int
-                if (score > highScore)                       // and keep track of the largest
-                {
-                    highScore = score;
-                }
-            } catch (NumberFormatException e1) {
-                // ignore invalid scores
-                //System.err.println("ignoring invalid score: " + line);
+        String[] highscores = getAllHighScore();
+        for(int i =0; i < highscores.length; i++){
+            if(scorePassed >= Integer.parseInt(highscores[i].trim().replace("\\n",""))){
+                highscores[i] = String.valueOf(scorePassed) + "\\n" + highscores[i];
+                //shighscores[5] = "";
             }
-            text = file.readString();
+        }
+
+        FileHandle file = Gdx.files.local("Data/highscores.txt");
+        for(int i =0; i < highscores.length; i++) {
+            file.writeString(highscores[i] + "\\n", false);
         }
     }
 
     public int getHighScore(){
         int highScore;
-        FileHandle handle = Gdx.files.local("words.txt");
+        FileHandle handle = Gdx.files.local("Data/highscores.txt");
         String text = handle.readString();
         String wordsArray[] = text.split("\\n");
-        highScore = Integer.parseInt(wordsArray[0]);
+        highScore = Integer.parseInt(wordsArray[0].trim());
         return highScore;
+    }
+
+    public String[] getAllHighScore(){
+        FileHandle handle = Gdx.files.local("Data/highscores.txt");
+        String text = handle.readString();
+        String wordsArray[] = text.split("\\n");
+        return wordsArray;
     }
 }

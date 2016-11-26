@@ -1,8 +1,13 @@
 package com.mygdx.game.States;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MyGdxGame;
 
 public class MenuState extends State {
@@ -11,21 +16,45 @@ public class MenuState extends State {
     private Texture title;
     private Texture playButton;
     private Texture selectCharacterButton;
+    private Animation animationSelect;
+    private Sprite button;
 
     public MenuState(GameStateManager gsm) {
+
         super(gsm);
         background = new Texture("StartStateResources/background.jpg");
         title = new Texture("StartStateResources/title.png");
         playButton = new Texture("StartStateResources/playButton.png");
         selectCharacterButton = new Texture("StartStateResources/selectCharacter.png");
+
+        float widthPlayButton = (float)0.65*playButton.getWidth();
+        float heightPlayButton = (float) 0.65*playButton.getHeight();
+        float positionPlayButton = (float)0.1*MyGdxGame.HEIGHT;
+        button = new Sprite(playButton);
+        button.setFlip(false,true);
+        button.setPosition((MyGdxGame.WIDTH / 2) - (widthPlayButton / 2), positionPlayButton);
+        button.setSize(widthPlayButton,heightPlayButton);
+
+
     }
 
     @Override
     public void bundleInput() {
 
-        if(Gdx.input.justTouched()) {
-            gsm.set(new GameState(gsm));
-            dispose();
+        if(Gdx.input.isKeyPressed(Input.Keys.P)) {
+
+            Vector3 m = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+            cam.unproject(m);
+           // Rectangle textureBounds = new Rectangle(button.getX(),button.getY(),button.getWidth(),button.getHeight());
+           // double checkPositionY = 0.9*MyGdxGame.HEIGHT - (MyGdxGame.HEIGHT-0.9*MyGdxGame.HEIGHT);
+           // if((Gdx.input.getX() > button.getX()) && (Gdx.input.getX() < button.getX() + button.getWidth())) {
+           //  if((Gdx.input.getY() > button.getY())) {/*&& (Gdx.input.getY() < 0.1*MyGdxGame.HEIGHT)) {*/
+                // if(textureBounds.contains(m.x,m.y)) {
+                    gsm.set(new GameState(gsm));
+                    dispose();//}
+             //  }
+            //}
+
         }
 
     }
@@ -54,7 +83,7 @@ public class MenuState extends State {
         sb.draw(background, 0, 0, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
         sb.draw(title, (MyGdxGame.WIDTH / 2) - (widthTitle / 2), positionTitle, widthTitle, heightTitle);
         sb.draw(selectCharacterButton, (int)((MyGdxGame.WIDTH / 2) - (widthSelectCharacterButton / 2)), (int) positionSelectCharacterButton, (int) widthSelectCharacterButton, (int) heightSelectCharacterButton);
-        sb.draw(playButton, (int)((MyGdxGame.WIDTH / 2) - (widthPlayButton / 2)), (int) positionPlayButton, (int) widthPlayButton, (int) heightPlayButton);
+        button.draw(sb);
         sb.end();
     }
 

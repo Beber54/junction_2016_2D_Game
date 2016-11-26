@@ -2,6 +2,7 @@ package com.mygdx.game.States;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -11,6 +12,8 @@ import com.mygdx.game.Sprites.Obstacle;
 import com.mygdx.game.Sprites.Type;
 
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Corentin on 26/11/2016.
@@ -29,7 +32,13 @@ public class GameState extends State{
 
     private static final int OBSTACLE_COUNT = 20;
 
+    public int score = 0;
+    public boolean isGameOver = false;
+
     public Type currentTypeMode = Type.Fire;
+
+    private String scoreDisplay;
+    BitmapFont yourBitmapFontName;
 
 
     private Array<Obstacle> obstacles;
@@ -45,6 +54,12 @@ public class GameState extends State{
         for(int i= 1; i < OBSTACLE_COUNT; i++ ){
             obstacles.add(new Obstacle(randomPosX(), randomPosY(), randomType(currentTypeMode)));
         }
+
+
+
+        //Init the score
+        scoreDisplay = "0";
+        yourBitmapFontName = new BitmapFont();
     }
 
     private int randomPosX(){
@@ -57,7 +72,6 @@ public class GameState extends State{
     private int randomPosY(){
         //double randomNumber = Math.floor((Math.random() * 4) * (MyGdxGame.HEIGHT - block.getTestTexture().getHeight()));
         int finalPos = (int) (MyGdxGame.HEIGHT - block.getTestTexture().getHeight()) + previousPosY;
-        Gdx.app.log("randomPosY",String.valueOf(finalPos));
         previousPosY += 1.5 * block.getTestTexture().getHeight();
         return finalPos;
     }
@@ -105,7 +119,6 @@ public class GameState extends State{
         Random rand = new Random();
         Type finalType = currentTypeMode;
         int randomTypeNumber = rand.nextInt((3 - 1) + 1) + 1;
-        Gdx.app.log("randomTypeNumber", String.valueOf(randomTypeNumber));
         switch (currentTypeMode){
             case Fire:
                 switch(randomTypeNumber){
@@ -169,7 +182,8 @@ public class GameState extends State{
         sb.draw(background, 0,0);
         sb.draw(character.getCharacter(), character.getPosition().x, character.getPosition().y, MyGdxGame.WIDTH/4, character.characterSprite.getHeight());
         sb.draw(block.getTestTexture(), block.getPosition().x, block.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
-
+        yourBitmapFontName.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        yourBitmapFontName.draw(sb, scoreDisplay, 25, 100);
         for(final Obstacle obs: obstacles){
             sb.draw(obs.getTestTexture(), obs.getPosition().x, obs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
         }
@@ -180,6 +194,25 @@ public class GameState extends State{
 
 
     public void dispose(){
+
+    }
+
+    public void triggerScore(){
+        score = 0;
+
+        new Timer().schedule(new TimerTask()
+        {
+
+            @Override
+            public void run()
+            {
+
+                    score += 10;
+                    scoreDisplay = String.valueOf(score);
+                    Gdx.app.log("score", String.valueOf(score));
+
+            }
+        }, 1000 );
 
     }
 }

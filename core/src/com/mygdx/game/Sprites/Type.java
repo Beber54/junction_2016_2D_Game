@@ -5,5 +5,5 @@ package com.mygdx.game.Sprites;
  */
 
 public enum Type {
-    Fire, Water, Air, Earth
+    Fire, Water, Air, Earth, ChangingMode
 }

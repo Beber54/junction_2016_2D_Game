@@ -18,7 +18,7 @@ import java.util.Random;
 public class Obstacle {
 
 
-    public int speed = -400;
+    public static int speed = -400;
 
     private Vector2 position;
     private Vector2 velocity;

@@ -17,6 +17,7 @@ import com.mygdx.game.Sprites.CharactersState;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 
 public class MenuState extends State {
@@ -40,6 +41,7 @@ public class MenuState extends State {
         float positionPlayButton = (float)0.1*MyGdxGame.HEIGHT;
         buttonToPlay = new Sprite(playButton);
         buttonToPlay.setPosition((MyGdxGame.WIDTH / 2) - (widthPlayButton / 2), positionPlayButton);
+        //buttonToPlay.setPosition(cam.position.x - playButton.getWidth() / 2, cam.position.y);
         buttonToPlay.setSize(widthPlayButton,heightPlayButton);
 
         float widthSelectButton = (float)0.9*selectButton.getWidth();
@@ -66,7 +68,8 @@ public class MenuState extends State {
             Rectangle textureBounds2 = new Rectangle(buttonToSelect.getX(),buttonToSelect.getY(),buttonToSelect.getWidth(),buttonToSelect.getHeight());
 
             if(textureBounds1.contains(m.x,MyGdxGame.HEIGHT  - m.y)) {
-                gsm.set(new GameState(gsm, "sprite1"));
+                int rdn  = (int)(Math.random()*(4-1))+1;
+                gsm.set(new GameState(gsm, "sprite"+rdn));
                 dispose();
             }
 
@@ -91,8 +94,10 @@ public class MenuState extends State {
         int heightTitle = (int)(0.85*title.getHeight());
         int positionTitle = (int)(0.7*MyGdxGame.HEIGHT);
 
+
         sb.begin();
         sb.draw(background, 0, 0, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
+        //sb.draw(background, 0, 0);
         sb.draw(title, (MyGdxGame.WIDTH / 2) - (widthTitle / 2), positionTitle, widthTitle, heightTitle);
         buttonToPlay.draw(sb);
         buttonToSelect.draw(sb);

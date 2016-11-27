@@ -36,6 +36,7 @@ public class GameState extends State{
 
     private Character character;
     private Obstacle block;
+    private Obstacle newObs;
 
     private Texture background;
 
@@ -43,10 +44,12 @@ public class GameState extends State{
 
     private int previousPosY = 0;
 
-    private static final int OBSTACLE_COUNT = 20;
+    private int OBSTACLE_COUNT = 20;
 
     public int score = 0;
     public boolean isGameOver = false;
+
+    private int timePlayed = 0;
 
     public Type currentTypeMode = Type.Earth;
 
@@ -90,6 +93,7 @@ public class GameState extends State{
         }
 
         triggerScore();
+        triggerTime();
 
         randomType(currentTypeMode);
 
@@ -203,7 +207,7 @@ public class GameState extends State{
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }*/
-                    currentSB.draw(background,0,0);
+                    currentSB.draw(background,0,0, MyGdxGame.WIDTH, MyGdxGame.HEIGHT);
                     //Reset of the height of y axis
                     previousPosY = 0;
                     //Relaunching the game
@@ -426,6 +430,40 @@ public class GameState extends State{
         }, 100, 100 );
     }
 
+    public void addObstacles(){
+        newObs = new Obstacle(randomPosX(), randomPosY(), randomType(currentTypeMode));
+        obstacles.add(newObs);
+        currentSB.begin();
+        currentSB.draw(newObs.getTestTexture(), newObs.getPosition().x, newObs.getPosition().y, MyGdxGame.WIDTH/4, MyGdxGame.WIDTH/4);
+        currentSB.end();
+    }
+
+    public void triggerTime(){
+        score = 0;
+        Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                timePlayed += 1;
+                if(timePlayed % 20 == 0){
+                    Obstacle.speed = Obstacle.speed - 50;
+
+                    int newSpeed = Obstacle.speed;
+                    for(int i = 0; i < obstacles.size; i++) {
+                        obstacles.get(i).speed = newSpeed;
+                    }
+                    for(int j = 0; j < 2; j++){
+                        //addObstacles();
+                    }
+                    Gdx.app.log("Obstacle.speed",String.valueOf(Obstacle.speed));
+                    Gdx.app.log("Obstacle.speed",String.valueOf(OBSTACLE_COUNT));
+                }
+            }
+        }, 1000, 1000 );
+    }
+
     public void saveTokens(int score){
         try{
             int tokensToAdd = 0;
@@ -455,7 +493,7 @@ public class GameState extends State{
         // determine the high score
         String[] highscores = getAllHighScore();
         for(int i =0; i < highscores.length; i++){
-            if(scorePassed >= Integer.parseInt(highscores[i].trim().replace("\\n",""))){
+            if(scorePassed >= Integer.parseInt(highscores[i].replace("\\n",""))){
                 highscores[i] = String.valueOf(scorePassed) + "\\n" + highscores[i];
                 //shighscores[5] = "";
             }

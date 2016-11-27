@@ -1,6 +1,8 @@
 package com.mygdx.game.States;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,7 +32,7 @@ import static com.mygdx.game.Sprites.Type.ChangingMode;
  * Created by Corentin on 26/11/2016.
  */
 
-public class GameState extends State{
+public class GameState extends State implements InputProcessor {
 
     private SpriteBatch currentSB;
 
@@ -111,6 +113,8 @@ public class GameState extends State{
         music.setLooping(true);
         music.play();
 
+        Gdx.input.setInputProcessor(this);
+
     }
 
     private int randomPosX(){
@@ -139,6 +143,15 @@ public class GameState extends State{
                 character.moveLeft();
             }
         }
+
+        /*if(Gdx.input.isKeyPressed(Input.Keys.LEFT)Gdx.input.) {
+            character.moveLeft();
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            character.moveRight();
+        }*/
+
     }
 
 
@@ -481,5 +494,55 @@ public class GameState extends State{
         String text = handle.readString();
         String wordsArray[] = text.split("\\n");
         return wordsArray;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+
+        if (keycode == Input.Keys.LEFT) {
+            character.moveLeft();
+        }
+
+        if (keycode == Input.Keys.RIGHT) {
+            character.moveRight();
+        }
+
+        return true;
+
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }

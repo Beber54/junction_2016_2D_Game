@@ -115,8 +115,8 @@ public class EndState extends State {
         font.draw(sb, "120s", (MyGdxGame.WIDTH / 2)+30, (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13));
         font.draw(sb, "5898", (MyGdxGame.WIDTH / 2)+30, (float) (0.34*MyGdxGame.HEIGHT+tokensImage.getHeight()-13));
 
-        /*sb.draw(hourglass, (float) ((MyGdxGame.WIDTH / 2)+70), (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13));
-        sb.draw(hourglass, (float) ((MyGdxGame.WIDTH / 2)+70), (float) (0.34*MyGdxGame.HEIGHT+timeImage.getHeight()-13));*/
+        //sb.draw(hourglass, (float) ((MyGdxGame.WIDTH / 2)+70), (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13), (float) (0.00001*MyGdxGame.WIDTH), scoreImage.getHeight());
+        sb.draw(coin, (float) ((MyGdxGame.WIDTH / 2)+100), (float) (0.34*MyGdxGame.HEIGHT), tokensImage.getHeight(), tokensImage.getHeight());
 
         sb.end();
 

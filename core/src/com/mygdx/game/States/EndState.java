@@ -22,10 +22,16 @@ public class EndState extends State {
     private Sprite buttonToMenu, buttonToReplay, buttonToBestScores;
     private Texture scoreImage, timeImage, tokensImage;
     private Texture hourglass, coin;
+    private int scoreFinal, time, token;
 
-    protected EndState(GameStateManager gsm) {
+    protected EndState(GameStateManager gsm, int s, int ti, int to) {
 
         super(gsm);
+
+        scoreFinal = s;
+        time = ti;
+        token = to;
+
         background = new Texture("EndResources/end.jpg");
         title = new Texture("EndResources/title.png");
         menuButton = new Texture("EndResources/menu.png");
@@ -111,12 +117,12 @@ public class EndState extends State {
         buttonToBestScores.draw(sb);
         buttonToReplay.draw(sb);
 
-        font.draw(sb, "11200", (MyGdxGame.WIDTH / 2)+30, (float) (0.50*MyGdxGame.HEIGHT+scoreImage.getHeight()-13));
-        font.draw(sb, "120s", (MyGdxGame.WIDTH / 2)+30, (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13));
-        font.draw(sb, "5898", (MyGdxGame.WIDTH / 2)+30, (float) (0.34*MyGdxGame.HEIGHT+tokensImage.getHeight()-13));
+        font.draw(sb, String.valueOf(scoreFinal), (MyGdxGame.WIDTH / 2)+30, (float) (0.50*MyGdxGame.HEIGHT+scoreImage.getHeight()-13));
+        font.draw(sb, String.valueOf(time), (MyGdxGame.WIDTH / 2)+30, (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13));
+        font.draw(sb, String.valueOf(token), (MyGdxGame.WIDTH / 2)+30, (float) (0.34*MyGdxGame.HEIGHT+tokensImage.getHeight()-13));
 
         //sb.draw(hourglass, (float) ((MyGdxGame.WIDTH / 2)+70), (float) (0.42*MyGdxGame.HEIGHT+timeImage.getHeight()-13), (float) (0.00001*MyGdxGame.WIDTH), scoreImage.getHeight());
-        sb.draw(coin, (float) ((MyGdxGame.WIDTH / 2)+100), (float) (0.34*MyGdxGame.HEIGHT), tokensImage.getHeight(), tokensImage.getHeight());
+        sb.draw(coin, (float) ((MyGdxGame.WIDTH / 2)+120), (float) (0.34*MyGdxGame.HEIGHT), tokensImage.getHeight(), tokensImage.getHeight());
 
         sb.end();
 

@@ -373,9 +373,9 @@ public class GameState extends State implements InputProcessor {
         if(life == 0 || life < 0){
             life = 0;
             //GAME OVER TO DO
-            gsm.set(new EndState(gsm));
             saveHighScore(score);
             saveTokens(score);
+            gsm.set(new EndState(gsm,score,timePlayed,MenuState.getTokens()));
             dispose();
         }
         currentSB.begin();
